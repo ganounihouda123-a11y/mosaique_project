@@ -70,7 +70,8 @@ class CampagneController extends Controller
          $clients = Client::all();
         $categories = Categorie::all();
 
-        return view('campagnes.create', compact('clients', 'categories'));
+        return response()->json($campagnes);
+       // return view('campagnes.create', compact('clients', 'categories'));//
     }
 
     /**
@@ -94,7 +95,8 @@ class CampagneController extends Controller
 
         Campagne::create($request->all());
 
-        return redirect()->route('campagnes.index')->with('success', 'Campagne créée avec succès !');
+        return response()->json($campagnes);
+       // return redirect()->route('campagnes.index')->with('success', 'Campagne créée avec succès !');//
     }
 
     /**
