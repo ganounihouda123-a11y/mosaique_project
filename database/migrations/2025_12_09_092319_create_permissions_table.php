@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
-            $table->string('name');        // view_sales, create_sales...
+            
+            $table->string('name');       
             $table->string('slug')->unique(); // view_sales
             $table->timestamps();
         });
