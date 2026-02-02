@@ -2,8 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\CampagneController;
+use App\Http\Controllers\CategorieController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,7 +40,10 @@ Route::middleware(['auth:sanctum', 'permission:create_sales'])->post('/ventes', 
     // create vente
 });
 Route::get('/roles', [RoleController::class, 'index']);
+Route::resource('categories', CategorieController::class);
+Route::resource('clients', ClientController::class);
 Route::resource('campagnes', CampagneController::class);
+
 
 Route::middleware(['auth:sanctum', 'permission:manage_roles'])->group(function () {
 
@@ -48,4 +53,7 @@ Route::middleware(['auth:sanctum', 'permission:manage_roles'])->group(function (
     Route::get('/permissions', [PermissionController::class, 'index']);
     Route::post('/permissions', [PermissionController::class, 'store']);
 
+});
+Route::get('/users', function () {
+    return App\Models\User::select('id','name','email','role')->get();
 });

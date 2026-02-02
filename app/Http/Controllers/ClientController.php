@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client; // NEW: import Client Eloquent model
+use Illuminate\Validation\Rule; // NEW: import Rule for unique validation
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB; // added
 
 class ClientController extends Controller
 {
@@ -13,17 +16,9 @@ class ClientController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        // Fetch all clients (you can replace with paginate if needed)
+        $clients = Client::orderBy('id', 'desc')->get(); // switched to Eloquent
+        return response()->json($clients);
     }
 
     /**
@@ -32,10 +27,27 @@ class ClientController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
-    }
+   // Assuming you have an Eloquent model named 'Client'
+
+public function store(Request $request)
+{
+    // 1. Validation remains the same
+    $data = $request->validate([
+        'name'          => 'required|string|max:255',
+        'email'         => 'required|email|max:255|unique:clients,email',
+        'campagne_nom'  => 'required|string|max:255',
+        'adresse'       => 'required|string|max:500',
+        'telephone'     => 'required|string|max:50',
+    ]);
+
+    // 2. Eloquent Insertion (Cleaner and handles created_at/updated_at automatically)
+    $client = Client::create($data); // Make sure 'name', 'email', etc., are in the $fillable array in the Client model
+
+    // 3. Eloquent returns the created model, no second query needed
+    
+    // 4. Response
+    return response()->json($client, 201);
+}
 
     /**
      * Display the specified resource.
@@ -45,18 +57,11 @@ class ClientController extends Controller
      */
     public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $client = Client::find($id); // use Eloquent instead of DB facade
+        if (!$client) {
+            return response()->json(['message' => 'Client not found'], 404);
+        }
+        return response()->json($client);
     }
 
     /**
@@ -68,17 +73,46 @@ class ClientController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // Ensure the client exists
+        $client = Client::find($id); // use Eloquent instead of DB facade
+        if (!$client) {
+            return response()->json(['message' => 'Client not found'], 404);
+        }
+
+        // Validate only provided fields
+        $data = $request->validate([
+            'name'          => 'sometimes|string|max:255',
+            'email'         => ['sometimes', 'email', 'max:255', Rule::unique('clients', 'email')->ignore($client->id)],
+            'campagne_nom'  => 'sometimes|string|max:255',
+            'adresse'       => 'sometimes|string|max:500',
+            'telephone'     => 'sometimes|string|max:50',
+        ]);
+
+        if (empty($data)) {
+            return response()->json(['message' => 'No data to update'], 422);
+        }
+
+        // Eloquent handles updated_at automatically
+        $client->fill($data)->save();
+
+        $client = Client::find($id); // optional re-fetch; can also return $client directly
+        return response()->json($client);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from storage.            
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        //
+        $client = Client::find($id); // use Eloquent instead of DB facade
+        if (!$client) {
+            return response()->json(['message' => 'Client not found'], 404);
+        }
+        $client->delete();
+
+        return response()->noContent();
     }
 }

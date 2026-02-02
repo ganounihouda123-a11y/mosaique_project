@@ -39,12 +39,12 @@ class CampagneController extends Controller
         $query->where('categorie_id', $request->categorie_id);
     }
 
-    // 🎯 Filter Type
+    //  Filter Type
     if ($request->filled('type')) {
         $query->where('type', $request->type);
     }
 
-    // 📊 Filter Ranking
+    //  Filter Ranking
     if ($request->filled('ranking')) {
         $query->where('ranking', $request->ranking);
     }
@@ -71,7 +71,7 @@ class CampagneController extends Controller
         $categories = Categorie::all();
 
         return response()->json($campagnes);
-       // return view('campagnes.create', compact('clients', 'categories'));//
+       // return view('campagnes.create', compact('clients', 'categories'));
     }
 
     /**
@@ -96,7 +96,7 @@ class CampagneController extends Controller
         Campagne::create($request->all());
 
         return response()->json($campagnes);
-       // return redirect()->route('campagnes.index')->with('success', 'Campagne créée avec succès !');//
+       // return redirect()->route('campagnes.index')->with('success', 'Campagne créée avec succès !');
     }
 
     /**
@@ -121,7 +121,8 @@ class CampagneController extends Controller
          $clients = Client::all();
         $categories = Categorie::all();
 
-        return view('campagnes.edit', compact('campagne', 'clients', 'categories'));
+        return response()->json($campagnes);
+        //return view('campagnes.edit', compact('campagne', 'clients', 'categories'));
     }
 
     /**
@@ -146,7 +147,8 @@ class CampagneController extends Controller
 
         $campagne->update($request->all());
 
-        return redirect()->route('campagnes.index')->with('success', 'Campagne modifiée avec succès !');
+        return response()->json($campagnes);
+        //return redirect()->route('campagnes.index')->with('success', 'Campagne modifiée avec succès !');
     }
 
     /**
@@ -159,7 +161,9 @@ class CampagneController extends Controller
     {
           $campagne->delete();
 
-        return redirect()->route('campagnes.index')->with('success', 'Campagne supprimée !');
+          return response()->json($campagnes);
+
+        //return redirect()->route('campagnes.index')->with('success', 'Campagne supprimée !');
     
     }
     

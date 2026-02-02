@@ -26,7 +26,8 @@ class CampagneSeeder extends Seeder
         }
 
         $now = Carbon::now();
-        $types = ['TV', 'Radio', 'Digital', 'Print'];
+        $types = ['Classique', 'Hors écran'];
+        $rankings = ['active', 'non_active'];
 
         $rows = [];
         for ($i = 1; $i <= 10; $i++) {
@@ -37,7 +38,7 @@ class CampagneSeeder extends Seeder
                 'date_debut' => $dateDebut->toDateString(),
                 'date_fin' => $dateFin->toDateString(),
                 'type' => $types[array_rand($types)],
-                'ranking' => random_int(1, 100),
+                'ranking' => $rankings[array_rand($rankings)],
                 'spot' => random_int(1, 50),
                 'id_client' => $clientIds[array_rand($clientIds)],
                 'id_categorie' => $categoryIds[array_rand($categoryIds)],

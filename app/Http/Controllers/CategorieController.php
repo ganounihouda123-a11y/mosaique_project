@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Categorie; // added model import
 
 class CategorieController extends Controller
 {
@@ -13,7 +14,10 @@ class CategorieController extends Controller
      */
     public function index()
     {
-        //
+        // BEGIN: implemented listing with pagination
+        $categories = Categorie::paginate(15);
+        return response()->json($categories);
+        // END
     }
 
     /**
@@ -23,7 +27,9 @@ class CategorieController extends Controller
      */
     public function create()
     {
-        //
+        // BEGIN: API-friendly placeholder (use a Blade view if desired)
+        return response()->json(['message' => 'Create form not implemented for API'], 501);
+        // END
     }
 
     /**
@@ -34,7 +40,15 @@ class CategorieController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // BEGIN: validate and create
+        $validated = $request->validate([
+            'nom' => 'required|string|max:255|unique:categories,nom',
+            'description' => 'nullable|string',
+        ]);
+
+        $categorie = Categorie::create($validated);
+        return response()->json($categorie, 201);
+        // END
     }
 
     /**
@@ -45,7 +59,10 @@ class CategorieController extends Controller
      */
     public function show($id)
     {
-        //
+        // BEGIN: fetch single category
+        $categorie = Categorie::findOrFail($id);
+        return response()->json($categorie);
+        // END
     }
 
     /**
@@ -56,7 +73,9 @@ class CategorieController extends Controller
      */
     public function edit($id)
     {
-        //
+        // BEGIN: API-friendly placeholder (use a Blade view if desired)
+        return response()->json(['message' => 'Edit form not implemented for API'], 501);
+        // END
     }
 
     /**
@@ -68,7 +87,17 @@ class CategorieController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // BEGIN: validate and update
+        $validated = $request->validate([
+            'nom' => 'required|string|max:255|unique:categories,name,' . $id,
+           
+        ]);
+
+        $categorie = Categorie::findOrFail($id);
+        $categorie->update($validated);
+
+        return response()->json($categorie);
+        // END
     }
 
     /**
@@ -79,6 +108,11 @@ class CategorieController extends Controller
      */
     public function destroy($id)
     {
-        //
+        // BEGIN: delete category
+        $categorie = Categorie::findOrFail($id);
+        $categorie->delete();
+
+        return response()->json(null, 204);
+        // END
     }
 }

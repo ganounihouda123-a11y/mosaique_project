@@ -31,10 +31,12 @@ return new class extends Migration
                       ->cascadeOnDelete()
                       ->cascadeOnUpdate();
                 // Foreign key to categories.id
-                $table->foreignId('id_categorie')
-                      ->constrained('categories')
-                      ->cascadeOnUpdate()
-                      ->cascadeOnDelete();
+               // Foreign key to clients.id
+               $table->foreignId('id_categorie')
+               ->references('id')
+               ->on('categories')
+               ->cascadeOnDelete()
+               ->cascadeOnUpdate();
                 $table->timestamps();
             });
         }

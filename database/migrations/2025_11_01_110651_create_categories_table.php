@@ -19,7 +19,7 @@ return new class extends Migration
         // Create the categories table (plural)
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('nom_categorie');
+            $table->string('nom');
             $table->timestamps();
         });
     }
